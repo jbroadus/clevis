@@ -2,10 +2,13 @@ cmds = ['tpm2_createprimary', ['tpm2_pcrread', 'tpm2_pcrlist'],
         'tpm2_createpolicy', 'tpm2_create', 'tpm2_flushcontext', 'tpm2_load',
         'tpm2_unseal']
 
+tpm2_tools_override = get_option('tpm2_tools')
 all = true
-foreach cmd : cmds
-  all = all and find_program(cmd, required: false).found()
-endforeach
+if tpm2_tools_override == ''
+  foreach cmd : cmds
+    all = all and find_program(cmd, required: false).found()
+  endforeach
+endif
 
 if all
   bins += join_paths(meson.current_source_dir(), 'clevis-decrypt-tpm2')
