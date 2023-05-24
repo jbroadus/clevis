@@ -1,7 +1,11 @@
 
 luksmeta_data = configuration_data()
 luksmeta = dependency('luksmeta', version: '>=8', required: false)
-pwmake = find_program('pwmake', required: false)
+
+pwmake_found = true
+if get_option('pwmake') == ''
+  pwmake_found = find_program('pwmake', required: false).found()
+endif
 
 libcryptsetup = dependency('libcryptsetup', version: '>=2.0.4', required: false)
 if libcryptsetup.found()
@@ -33,7 +37,7 @@ clevis_luks_unbind = configure_file(input: 'clevis-luks-unbind.in',
                output: 'clevis-luks-unbind',
                configuration: luksmeta_data)
 
-if libcryptsetup.found() and luksmeta.found() and pwmake.found()
+if libcryptsetup.found() and luksmeta.found() and pwmake_found
   subdir('systemd')
   subdir('udisks2')
 
